@@ -1,0 +1,18 @@
+body{
+    background-color: rgba(225, 225, 225, 0.5);
+}
+
+h1{
+    text-align: center;
+}
+
+.order-summary{
+    background-color: rgba(175, 175, 175, 0.7);
+    border:2px solid black;
+}
+
+.popup {
+    color:red;
+    font-size: x-large;
+
+}
