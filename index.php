@@ -1,138 +1,16 @@
 <?php
+
+// This file is your starting point (= since it's the index)
+// It will contain most of the logic, to prevent making a messy mix in the html
+
+// This line makes PHP behave in a more strict way
+declare(strict_types=1);
+
+// We are going to use session variables so we need to enable sessions
 session_start();
 
-$emailErr = $streetErr = $numberErr = $cityErr = $zipcodeErr = $productErr = "";
-$email = $street = $streetnumber = $city = $zipcode = $product = "";
-$result="";
-$text="Your Input : ";
-$order_text="Your order is :";
 
-if (isset($_POST["order"])) {
-
-    //email
-    if (empty($_POST["email"])) {
-        $emailErr = "Email is Required";
-    }
-    else {
-        $email = $_POST["email"];
-        $_SESSION["email"] = $_POST["email"];
-        
-    }
-
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailErr = "Invalid email format";
-      }
-
-
-    //street
-
-    if (empty($_POST["street"])) {
-        $streetErr = " Street is Required";
-    }
-    else {
-        $street = $_POST["street"];
-        $_SESSION["street"] = $_POST["street"];
-        
-    }
-
-    //street Number
-
-    if (empty($_POST["streetnumber"]))  {
-        $numberErr = "Street number is Required";
-
-    }
-    
-    else {
-        $streetnumber = $_POST["streetnumber"];
-        $_SESSION["streetnumber"] = $_POST["streetnumber"];
-        
-    
-    } 
-
-    //city
-    if (empty($_POST["city"])) {
-        $cityErr = "city is Required";
-
-    }
-    else {
-        $city = $_POST["city"];
-        $_SESSION["city"] = $_POST["city"];
-        
-
-    }
-
-    //Zipcode
-    if (empty($_POST["zipcode"])){
-        $zipcodeErr = "Only number Required";
-        } else {
-          if (!preg_match("/^[1-9][0-9]*$/",$_POST["zipcode"])) {
-              $zipcodeErr = "Only number Required";
-          } else {
-             $zipcode = $_POST["zipcode"];
-             $_SESSION["zipcode"] = $_POST["zipcode"];
-        
-        }
-       
-    }
-
-    //product
-
-    if (empty($_POST["products"])) {
-        $productErr = "Please Choose your Product ";
-    }
-    else {
-        $products = $_POST["products"];
-        $_SESSION["products"] = $_POST["products"];
-         
-    }
-
-    //showing error and approved Message 
-
-    if (!empty($_POST["email"]) && !empty($_POST["street"]) && !empty($_POST["streetnumber"]) && !empty($_POST["city"]) && !empty($_POST["zipcode"]) && !empty($_POST["products"])){
-        $result = '<div class="alert alert-success" role="alert">Thank you! Your order is submitted !  at </div>';
-    } else {
-        $result = '<div class="alert alert-danger" role="alert">Please fill in Form Order</div>';
-    }
-    
-
-}
-
-
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-  }
-  
-  //TODO :is still not working if we click the nav option our input in gone 
-  // option for product
-  
- 
-    $products = [
-        
-            ['name' => 'Tiesto', 'price' => 1500,'image' =>'https://www.freepik.com/premium-photo/close-up-dj-hands-controlling-music-table-night-club_4585847.htm#query=dj&position=4'],
-            ['name' => 'David Guetta', 'price' => 1455,'image' =>'https://www.freepik.com/free-photo/closeup-male-dj-working-lights-against-dark-background-studio_10499884.htm#query=dj&position=30'],
-            ['name' => 'Dj Snake', 'price' => 1500,'image' =>'https://www.freepik.com/premium-photo/close-up-dj-hands-controlling-music-table-night-club_4585847.htm#query=dj&position=4'],
-            ['name' => 'Charlotte Dewitte', 'price' => 1000,'image' =>'https://www.freepik.com/free-photo/cute-dj-woman-having-fun-playing-music-club-party_6526776.htm#query=dj&position=27'],
-            ['name' => 'Daft Punk', 'price' => 2500,'image' =>'https://www.freepik.com/premium-photo/close-up-dj-hands-controlling-music-table-night-club_4585847.htm#query=dj&position=4'],
-            ['name' => 'Martin Garrix', 'price' => 3500,'image' =>'https://www.freepik.com/premium-photo/close-up-dj-hands-controlling-music-table-night-club_4585847.htm#query=dj&position=4'],
-  
-    ];
-   
- 
-
-
-
- 
-$totalValue = 0;
-foreach ($_POST['products'] as $i => $value) {
-    $totalValue += ($products[$i]['price']);
-}
-
-require 'form-view.php';
-
+// Use this function when you need to need an overview of these variables
 function whatIsHappening() {
     echo '<h2>$_GET</h2>';
     var_dump($_GET);
@@ -142,8 +20,112 @@ function whatIsHappening() {
     var_dump($_COOKIE);
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
+    
+}
+$products = [
+    ['name' => 'Tiesto', 'price' => 1500],
+    ['name' => 'David Guetta', 'price' => 1455],
+    ['name' => 'DJ Snake', 'price' => 1500],
+    ['name' => 'Charlotte Dewitte', 'price' => 1000],
+    ['name' => 'Daft Punk', 'price' => 2500],
+    ['name' => 'Martin Garrix', 'price' => 3500],
+];
 
+$email="";
+$errorEmail="";
+$zipcode="";
+$errorZip="";
+$streetNumber="";
+$errorStreet="";
+$street="";
+$errorStreet="";
+$errorCity="";
+$errorStreetNumber="";
+$productsWarning ="";
+$city="";
+$productsSelected=[];
+
+//whatIsHappening();
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+if(isset($_POST['submit'])){
+  if (!empty($_POST['products'])) {
+    $productsSelected = array_keys($_POST['products']);
+  }
+        
+    // if(!empty($_POST['products']))
+    // {
+    // $chosenProducts = array_keys($_POST['products']);
+
+    //     foreach ($chosenProducts as $item) {
+    //         array_push($chosentProductArray, $products[$item]->name);
+    //         array_push($chosenPriceArray, $products[$item]->price);
+    //     }
+    // }
+   if (empty($_POST['email'])){
+       
+    $errorEmail=' <div class="alert alert-danger" role="alert">Please enter your email adress!</div>';
+   } 
+   else{
+   
+   $email = test_input($_POST["email"]);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  $errorEmail = '<div class="alert alert-danger" role="alert">"Invalid email format</div>';
+}
+}   
+    
+if (empty($_POST['zipcode'])){
+         
+        $errorZip=' <div class="alert alert-danger" role="alert">Please enter your zip code!</div>';
+       } 
+       else{
+        
+        
+         $zipcode = test_input($_POST["zipcode"]);
+        if (!filter_var($zipcode, FILTER_VALIDATE_INT)) {
+      $errorZip = '<div class="alert alert-danger" role="alert">"Invalid zip code format</div>';
+    }
+   
+}
+if (empty($_POST['street'])){
+         
+    $errorStreet=' <div class="alert alert-danger" role="alert">Please enter your street!</div>';
+   } 
+   else{
+  
+        $street = test_input($_POST["street"]);
+  
+}
+if (empty($_POST['streetnumber'])){
+         
+    $errorStreetNumber=' <div class="alert alert-danger" role="alert">Please enter your street number!</div>';
+   } 
+   else{
+  
+        $streetNumber= test_input($_POST["streetnumber"]);
+}
+if (empty($_POST['city'])){
+         
+  $errorCity=' <div class="alert alert-danger" role="alert">Please enter your city!</div>';
+ } 
+ else{
+
+      $city = test_input($_POST["city"]);
 
 }
+}
 
-whatIsHappening();
+
+// TODO: provide some products (you may overwrite the example)
+
+
+
+
+$totalValue = 0;
+
+require 'form-view.php';

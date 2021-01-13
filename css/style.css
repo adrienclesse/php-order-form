@@ -9,9 +9,6 @@ h1{
 .order-summary{
     background-color: rgba(175, 175, 175, 0.7);
     border:2px solid black;
-    text-align: center;
-    padding: 20px;
-
 }
 
 .popup {
