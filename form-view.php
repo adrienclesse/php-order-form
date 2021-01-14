@@ -73,8 +73,8 @@
             <?php foreach ($products as $i => $product): ?>
                 <label>
 					<?php // <?p= is equal to <?php echo ?>
-                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]"/> <?php echo $product['name'] ?> -
-                    &euro; <?= number_format($product['price'], 2) ?></label><br />
+                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]"/> <?php echo $product->name ?> -
+                    &euro; <?= number_format($product->price, 2) ?></label><br />
             <?php endforeach; ?>
         </fieldset>
 
@@ -88,12 +88,11 @@
 <p> <strong>your email:</strong></p>   <?php echo $email ?> </p>
 <p><strong>Adress of the party:</strong> </p> <?php echo $street. " n° ". $streetNumber. " , " . $zipcode . " " . $city. "."?> </p>
 <p><strong>Dj's selected:</strong> </p> 
-<?php foreach ($productsSelected as $item) {
-                echo '<li>' . $products[$item]["name"] . '</li>';
-    
-            } ?>
+<?php foreach ($productsSelected as $item=>$products) : 
+                echo '<li>' . $products->name . '</li>'; ?>
+ <?php endforeach;?>
      
-
+        
 </div>
 <style>
     footer {

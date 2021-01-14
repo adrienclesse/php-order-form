@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 // We are going to use session variables so we need to enable sessions
 session_start();
+require "Product.php";
+
 
 
 // Use this function when you need to need an overview of these variables
@@ -22,14 +24,14 @@ function whatIsHappening() {
     var_dump($_SESSION);
     
 }
-$products = [
-    ['name' => 'Tiesto', 'price' => 1500],
-    ['name' => 'David Guetta', 'price' => 1455],
-    ['name' => 'DJ Snake', 'price' => 1500],
-    ['name' => 'Charlotte Dewitte', 'price' => 1000],
-    ['name' => 'Daft Punk', 'price' => 2500],
-    ['name' => 'Martin Garrix', 'price' => 3500],
-];
+// $products = [
+//     ['name' => 'Tiesto', 'price' => 1500],
+//     ['name' => 'David Guetta', 'price' => 1455],
+//     ['name' => 'DJ Snake', 'price' => 1500],
+//     ['name' => 'Charlotte Dewitte', 'price' => 1000],
+//     ['name' => 'Daft Punk', 'price' => 2500],
+//     ['name' => 'Martin Garrix', 'price' => 3500],
+// ];
 
 $email="";
 $errorEmail="";
@@ -58,15 +60,7 @@ if(isset($_POST['submit'])){
     $productsSelected = array_keys($_POST['products']);
   }
         
-    // if(!empty($_POST['products']))
-    // {
-    // $chosenProducts = array_keys($_POST['products']);
-
-    //     foreach ($chosenProducts as $item) {
-    //         array_push($chosentProductArray, $products[$item]->name);
-    //         array_push($chosenPriceArray, $products[$item]->price);
-    //     }
-    // }
+   
    if (empty($_POST['email'])){
        
     $errorEmail=' <div class="alert alert-danger" role="alert">Please enter your email adress!</div>';
@@ -121,11 +115,7 @@ if (empty($_POST['city'])){
 }
 
 
-// TODO: provide some products (you may overwrite the example)
-
-
-
-
 $totalValue = 0;
+    
 
 require 'form-view.php';
